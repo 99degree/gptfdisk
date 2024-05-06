@@ -144,17 +144,20 @@ ALL_EXE=$(ALL:=$(FN_EXTENSION))
 
 all:	$(ALL)
 
-gdisk:	$(LIB_OBJS) gdisk.o gpttext.o
-	$(CXX) $(LIB_OBJS) gdisk.o gpttext.o $(LDFLAGS) $(LDLIBS) $(FATBINFLAGS) -o gdisk$(FN_EXTENSION)
+gdisk:	$(LIB_OBJS) gdisk.o gpttext.o libuuid/libuuid.a
+	$(CXX) $(LIB_OBJS) gdisk.o gpttext.o $(LDFLAGS) $(LDLIBS) $(FATBINFLAGS) -Wl -o gdisk$(FN_EXTENSION)
 
-cgdisk: $(LIB_OBJS) cgdisk.o gptcurses.o
-	$(CXX) $(LIB_OBJS) cgdisk.o gptcurses.o $(LDFLAGS) $(LDLIBS) $(CGDISK_LDLIBS) -o cgdisk$(FN_EXTENSION)
+#cgdisk: $(LIB_OBJS) cgdisk.o gptcurses.o
+#	$(CXX) $(LIB_OBJS) cgdisk.o gptcurses.o $(LDFLAGS) $(LDLIBS) $(CGDISK_LDLIBS) -o cgdisk$(FN_EXTENSION)
 
-sgdisk: $(LIB_OBJS) sgdisk.o gptcl.o
-	$(CXX) $(LIB_OBJS) sgdisk.o gptcl.o $(LDFLAGS) $(LDLIBS) $(SGDISK_LDLIBS) $(THINBINFLAGS) -o sgdisk$(FN_EXTENSION)
+#sgdisk: $(LIB_OBJS) sgdisk.o gptcl.o
+#	$(CXX) $(LIB_OBJS) sgdisk.o gptcl.o $(LDFLAGS) $(LDLIBS) $(SGDISK_LDLIBS) $(THINBINFLAGS) -o sgdisk$(FN_EXTENSION)
 
 fixparts: $(MBR_LIB_OBJS) fixparts.o
 	$(CXX) $(MBR_LIB_OBJS) fixparts.o $(LDFLAGS) $(FATBINFLAGS) -o fixparts$(FN_EXTENSION)
+
+libuuid/libuuid.a: subdirs libuuid/*.o
+	$(MAKE) -C libuuid
 
 test:
 	./gdisk_test.sh
