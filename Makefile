@@ -142,10 +142,17 @@ LIB_HEADERS=$(LIB_NAMES:=.h)
 DEPEND= makedepend $(CXXFLAGS)
 ALL_EXE=$(ALL:=$(FN_EXTENSION))
 
+SUBDIRS:= $(wildcard */.)
+
+subdirs:
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir; \
+	done
+
 all:	$(ALL)
 
 gdisk:	$(LIB_OBJS) gdisk.o gpttext.o libuuid/libuuid.a
-	$(CXX) $(LIB_OBJS) gdisk.o gpttext.o $(LDFLAGS) $(LDLIBS) $(FATBINFLAGS) -Wl -o gdisk$(FN_EXTENSION)
+	$(CXX) $(LIB_OBJS) gdisk.o gpttext.o $(LDFLAGS) $(LDLIBS) $(FATBINFLAGS) -o gdisk$(FN_EXTENSION)
 
 #cgdisk: $(LIB_OBJS) cgdisk.o gptcurses.o
 #	$(CXX) $(LIB_OBJS) cgdisk.o gptcurses.o $(LDFLAGS) $(LDLIBS) $(CGDISK_LDLIBS) -o cgdisk$(FN_EXTENSION)
@@ -156,7 +163,9 @@ gdisk:	$(LIB_OBJS) gdisk.o gpttext.o libuuid/libuuid.a
 fixparts: $(MBR_LIB_OBJS) fixparts.o
 	$(CXX) $(MBR_LIB_OBJS) fixparts.o $(LDFLAGS) $(FATBINFLAGS) -o fixparts$(FN_EXTENSION)
 
-libuuid/libuuid.a: subdirs libuuid/*.o
+
+
+libuuid/libuuid.a: subdirs libuuid/
 	$(MAKE) -C libuuid
 
 test:
